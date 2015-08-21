@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Search bar</title>
+<link href="style/reset.css" rel="stylesheet" type="text/css">
+<style>
+body{background-color:#333}
+.search-bar{}
+.search-form{position:relative; top:300px; left:400px; width:540px; height:35px; background-color:#fff;}
+.search-text{width:500px; height:35px; border:0; vertical-align:top;}
+.search-button{background-image:url(images/search_button.png); width:35px; height:35px; background-size:35px 35px; border:0;}
+.search-hint{width:350px; background-color:#fff; position:relative; border:1px #000 solid;}
+</style>
+</head>
+
+<body>
+<div class="search-bar">
+    <form action="#" class="search-form" id="search-form">
+        <input type="text" class="search-text" id="search-text"/>
+        <input type="submit" value="" class="search-button"/>
+    </form>
+    <ul class="search-hint" id="search-hint" style="display:none">
+    	<li>搜索内容</li>
+        <li>搜索内容</li>
+    </ul>
+</div>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script>
+$("#search-text").bind('keyup',function(){
+	var input = $(this);
+	var searchText = input.val();
+	//var searchText = $("#search-text").val();
+	//console.log(searchText);
+	$.get('http://bj1.api.bing.com/qsonhs.aspx?q='+searchText,function(d){
+		var d = d.AS.Results[0].Suggests;
+		var html='';
+		for(var i=0;i<d.length;i++){
+			html+='<li>'+d[i].Txt+'</li>';
+		} 
+		$("#search-hint").html(html);
+		},'json');
+	$("#search-hint").show().css({
+		top:$("#search-form").offset().top,
+		left:$("#search-form").offset().left
+	});
+	
+	$(document).bind('click',function(){
+		$('#search-hint').hide();
+	});
+	
+	$(document).delegate('li','click',function(){
+		var keyword = $(this).text();
+		location.href = 'http://cn.bing.com/search?q='+keyword;
+	});
+})
+</script>
+</body>
+</html>
