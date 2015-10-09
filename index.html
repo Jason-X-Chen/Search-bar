@@ -21,25 +21,30 @@ body{background-color:#333}
         <input type="submit" value="" class="search-button"/>
     </form>
     <ul class="search-hint" id="search-hint" style="display:none">
-    	<li>搜索内容</li>
-        <li>搜索内容</li>
     </ul>
 </div>
-<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="js/jquery-2.1.1.min.js"></script>
 <script>
 $("#search-text").bind('keyup',function(){
 	var input = $(this);
 	var searchText = input.val();
-	//var searchText = $("#search-text").val();
-	//console.log(searchText);
-	$.get('http://bj1.api.bing.com/qsonhs.aspx?q='+searchText,function(d){
-		var d = d.AS.Results[0].Suggests;
-		var html='';
-		for(var i=0;i<d.length;i++){
-			html+='<li>'+d[i].Txt+'</li>';
-		} 
-		$("#search-hint").html(html);
-		},'json');
+	$.ajax({
+		type:"GET",
+		url:'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd='+searchText+'&json=1&p=3&oTime',
+		dataType:"jsonp",
+		jsonp:"cb",
+		success:function(data){
+			var d = data.s;
+			var html='';
+			$(d).each(function(index,obj){
+				html+='<li>'+this+'</li>';
+			});
+			$("#search-hint").html(html);
+		},
+		error:function(jqXHR){
+			console.log(jqXHR.status);
+		},
+	});
 	$("#search-hint").show().css({
 		top:$("#search-form").offset().top,
 		left:$("#search-form").offset().left
@@ -51,7 +56,8 @@ $("#search-text").bind('keyup',function(){
 	
 	$(document).delegate('li','click',function(){
 		var keyword = $(this).text();
-		location.href = 'http://cn.bing.com/search?q='+keyword;
+		//location.href = 'http://cn.bing.com/search?q='+keyword;
+		location.href = 'http://www.baidu.com/s?wd='+keyword;
 	});
 })
 </script>
